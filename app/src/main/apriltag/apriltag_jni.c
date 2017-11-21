@@ -94,11 +94,15 @@ JNIEXPORT jboolean JNICALL Java_edu_umich_eecs_april_apriltag_ApriltagNative_hom
     if(known_nodes<4)return false;
     matd_t * h = homography_compute(correspondences, HOMOGRAPHY_COMPUTE_FLAG_SVD);
     zarray_destroy(correspondences);
-    for (int i = 0; i < len; i++) {
+    for (int i = 0; i < len; i+=4) {
         float corr[4];
-        (*env)->GetFloatArrayRegion(env,coordinates,i*4,4,corr);
+        (*env)->GetFloatArrayRegion(env,coordinates,i,4,corr);
         if(corr[2]<0 && corr[3]<0) {
-            homography_project(h,corr[0],corr[1],corr+2,corr+3);
+            double ox,oy;
+            homography_project(h,corr[0],corr[1],&ox,&oy);
+            corr[2]=ox;
+            corr[3]=oy;
+            (*env)->SetFloatArrayRegion(env,coordinates,i,4,corr);
         }
     }
     matd_destroy(h);

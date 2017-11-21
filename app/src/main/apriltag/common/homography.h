@@ -136,6 +136,7 @@ extern "C" {
 
 matd_t *homography_compute(zarray_t *correspondences, int flags);
 
+
 //void homography_project(const matd_t *H, double x, double y, double *ox, double *oy);
 static inline void homography_project(const matd_t *H, double x, double y, double *ox, double *oy)
 {
